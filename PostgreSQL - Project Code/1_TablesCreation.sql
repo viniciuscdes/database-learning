@@ -1,4 +1,4 @@
--- //  Tables Creation
+-- ///  Tables Creation
 
 -- Client
 --------- without constraints 
@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS account(
 
 ALTER TABLE account ADD CONSTRAINT account_pkey primary key(account_id); 
 ALTER TABLE account ADD CONSTRAINT account_number_unique UNIQUE (account_number);
+ALTER TABLE account ADD CONSTRAINT account_client_unique UNIQUE (client_id);
 ALTER TABLE account ADD CONSTRAINT account_fk_client_id FOREIGN KEY (client_id)
         REFERENCES client (client_id) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -67,6 +68,7 @@ CREATE TABLE IF NOT EXISTS account(
     account_updated_at     timestamp,
     CONSTRAINT account_pkey PRIMARY KEY (account_id),
     CONSTRAINT account_number_unique UNIQUE(account_number),
+    CONSTRAINT account_client_unique UNIQUE(client_id),
     CONSTRAINT account_fk_client_id FOREIGN KEY (client_id)
         REFERENCES client (client_id) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -125,9 +127,8 @@ CREATE TABLE IF NOT EXISTS banktransaction(
         NOT VALID   
 );
 
---(
-    
--- // Sequence 
+-------------------------------------------------------------------------- 
+-- /// Sequence 
 create table color(
     id int not null, 
     name varchar(30),
@@ -149,5 +150,3 @@ drop sequence color_id_seq cascade;
 create sequence color_id_seq2;
 
 drop sequence color_id_seq2;
-
---)

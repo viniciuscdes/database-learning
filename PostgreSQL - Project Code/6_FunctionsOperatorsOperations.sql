@@ -1,3 +1,5 @@
+--/// Logic Operators
+
 -- AND 
 
 SELECT *
@@ -26,7 +28,8 @@ SELECT *
  WHERE banktransaction_type = 'C'
    AND NOT banktransaction_type = 'D';
 
--- // Comparation Operators 
+--------------------------------------------------------------------------
+-- /// Comparation Operators 
 
 SELECT *
   FROM banktransaction
@@ -49,8 +52,8 @@ SELECT *
  WHERE banktransaction_value = 111111;
 
 
-
--- //// Mathematical Operators and Mathematical Functions 
+--------------------------------------------------------------------------
+-- /// Mathematical Operators and Mathematical Functions 
 
 --// Mathematical Operators
 select 2+3;
@@ -94,8 +97,8 @@ select cot(3);
 select sin(3);
 select tan(3);
 
-
--- //// Text Functions
+--------------------------------------------------------------------------
+-- /// Text Functions
 
 -- Concat Strings
     SELECT 'name: ' || cl.client_name || ' -- account: ' || ac.account_id
@@ -136,7 +139,7 @@ INNER JOIN account ac
       FROM client cl
 	 WHERE cl.client_id = '312c2cfd-589e-4c5b-a8e0-333abfff3336';
 
-
+--------------------------------------------------------------------------
 -- /// Date Functions
 
 show datestyle;
@@ -194,10 +197,8 @@ SELECT EXTRACT(YEAR FROM account_created_at)
  FROM account;
 
 
-
--- // Aggregators Functions - COUNT() SUM() AVG() MAX() MIN() GROUP BY 
--- COUNT()
--- 
+--------------------------------------------------------------------------
+-- /// Aggregators Functions - COUNT() SUM() AVG() MAX() MIN() GROUP BY 
 
 -- MAX() -> MAXIMUM VALUE OF banktransaction_value 
     SELECT cl.client_name, ac.account_id, MAX(bt.banktransaction_value)
@@ -258,6 +259,7 @@ INNER JOIN banktransaction bt
   GROUP BY cl.client_name, ac.account_id
   HAVING SUM(bt.banktransaction_value) > 30000
 
+--------------------------------------------------------------------------
 --/// Window functions
 
 -- ROW_NUMBER()
@@ -279,8 +281,8 @@ INNER JOIN banktransaction bt
 ORDER BY banktransaction_type
 
 
-
---// Select with In 
+--------------------------------------------------------------------------
+--/// Select with In 
 
 SELECT *
   FROM banktransaction
