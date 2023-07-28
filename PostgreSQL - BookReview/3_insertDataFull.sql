@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS public.venda
     venda_total double precision,
     venda_desconto double precision,
     venda_ativo boolean DEFAULT true,
+    venda_comissionado boolean DEFAULT false,
     venda_data_criacao timestamp without time zone,
     venda_data_atualizacao timestamp without time zone,
     funcionario_id uuid,
@@ -101,8 +102,8 @@ CREATE TABLE IF NOT EXISTS public.itens_venda
     itens_venda_valor double precision,
     itens_venda_quantidade integer,
     itens_venda_total double precision,
-    itens_data_criacao timestamp without time zone,
-    itens_data_atualizacao timestamp without time zone,
+    itens_venda_data_criacao timestamp without time zone,
+    itens_venda_data_atualizacao timestamp without time zone,
     CONSTRAINT itens_venda_pk PRIMARY KEY (itens_venda_id),
     CONSTRAINT itens_venda_produto_fk FOREIGN KEY (produto_id)
         REFERENCES public.produto (produto_id) MATCH SIMPLE

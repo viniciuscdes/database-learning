@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS venda(
     venda_total double precision,
     venda_desconto double precision,
     venda_ativo boolean DEFAULT true,
+    venda_comissionado BOOLEAN DEFAULT false,
     venda_data_criacao timestamp without time zone,
     venda_data_atualizacao timestamp without time zone,
     funcionario_id uuid,
@@ -69,8 +70,8 @@ CREATE TABLE IF NOT EXISTS itens_venda(
     itens_venda_valor double precision,
     itens_venda_quantidade integer,
     itens_venda_total double precision,
-    itens_data_criacao timestamp without time zone,
-    itens_data_atualizacao timestamp without time zone,
+    itens_venda_data_criacao timestamp without time zone,
+    itens_venda_data_atualizacao timestamp without time zone,
     CONSTRAINT itens_venda_pk PRIMARY KEY (itens_venda_id),
     CONSTRAINT itens_venda_produto_fk FOREIGN KEY (produto_id)
         REFERENCES produto (produto_id) MATCH SIMPLE
@@ -129,6 +130,8 @@ create sequence mesa_id_seq;
 alter table mesa
 alter column mesa_id set default nextval('mesa_id_seq');
 
+-- Inserindo dados na tabela mesa
+
 insert into mesa (mesa_codigo,
                   mesa_ativo,
                   mesa_data_criacao,
@@ -146,6 +149,8 @@ insert into mesa (mesa_codigo,
                   true,
                   '01/01/2023',
                   '01/01/2023');
+
+-- Inserindo dados na tabela funcionario 
 
 insert into funcionario(funcionario_id,
                         funcionario_codigo,
@@ -182,6 +187,8 @@ insert into funcionario(funcionario_id,
                         'GARÇOM',
                         '01/01/2023',
                         '01/01/2023');
+
+-- Inserindo dados na tabela produto 
 
 insert into produto(produto_codigo,
                     produto_nome,
@@ -222,12 +229,15 @@ insert into produto(produto_codigo,
                     '01/01/2023',
                     '01/01/2023');
 
+-- Inserindo dados na tabela venda 
+
 insert into venda(venda_id,
                   venda_codigo,
                   venda_valor,
                   venda_total,
                   venda_desconto,
                   venda_ativo,
+                  venda_comissionado,
                   venda_data_criacao,
                   venda_data_atualizacao,
                   funcionario_id,
@@ -238,6 +248,7 @@ insert into venda(venda_id,
                   '20',
                   '0',
                   true,
+                  false,
                   '01/01/2023',
                   '01/01/2023',
                   
@@ -250,28 +261,104 @@ insert into venda()
                   '20',
                   '0',
                   true,
+                  false,
                   '01/01/2023',
                   '01/01/2023',
                   
                   1);  
 
-insert into itens_venda()
+-- Inserindo dados na tabela itens_venda 
+insert into itens_venda(itens_venda_id,
+                        produto_id,
+                        venda_id,
+                        itens_venda_valor,
+                        itens_venda_quantidade,
+                        itens_venda_total,
+                        itens_venda_data_criacao,
+                        itens_venda_data_atualizacao)
                  values(gen_random_uuid(),
-                        ,
-                        ,
+                        'e8f1f733-09ff-4992-9b60-e0321266b894',
+                        'fa9010d8-ef7e-4191-bb4b-7e8d4ac501cd',
                         10,
                         2,
                         20,
                         '01/01/2023',
                         '01/01/2023');
 
-insert into itens_venda()
+-- Utilizando o produto AGUA e segunda venda
+
+insert into itens_venda(itens_venda_id,
+                        produto_id,
+                        venda_id,
+                        itens_venda_valor,
+                        itens_venda_quantidade,
+                        itens_venda_total,
+                        itens_venda_data_criacao,
+                        itens_venda_data_atualizacao)
                  values(gen_random_uuid(),
-                        ,
-                        ,
+                        '86b46f1e-5056-4562-bffc-85544cc6ea9b',
+                        'da80d450-235a-4c02-af3b-e3adc43cd14f',
                         7,
                         3,
                         21,
                         '01/01/2023',
                         '01/01/2023');
 
+  SELECT produto_id , SUM(itens_venda_total)
+    FROM itens_venda
+GROUP BY produto_id;
+
+
+CREATE OR REPLACE FUNCTION 
+retorna_nome_produto(prod_id UUID) 
+RETURNS TEXT AS 
+$$              
+    DECLARE 
+    nome     TEXT;   
+BEGIN
+    SELECT produto_nome                     
+      INTO nome
+      FROM produto
+     WHERE produto_id = prod_id;                
+        
+    RETURN nome;
+END
+$$ 
+LANGUAGE PLPGSQL;
+
+
+  SELECT retorna_nome_produto(produto_id) , sum(itens_venda_total)
+    FROM itens_venda
+GROUP BY produto_id;
+
+
+  SELECT retorna_nome_produto(produto_id) PRODUTO, 
+         sum(itens_venda_total) VL_TOTAL_PRODUTO
+    FROM itens_venda
+GROUP BY produto_id
+ORDER BY vl_total_produto, produto;
+
+
+  SELECT retorna_nome_produto(produto_id) PRODUTO, 
+         sum(itens_venda_total) VL_TOTAL_PRODUTO
+    FROM itens_venda
+GROUP BY produto_id
+ORDER BY vl_total_produto DESC, produto;
+
+
+  SELECT retorna_nome_produto(produto_id), 
+         COUNT(itens_venda_id) QTDE
+    FROM itens_venda
+GROUP BY produto_id;
+
+
+  SELECT retorna_nome_produto(produto_id) produto, 
+         COUNT(itens_venda_id) qtde
+    FROM itens_venda
+GROUP BY produto_id
+  HAVING COUNT(produto_id) >= 2
+ORDER BY qtde;
+
+
+
+---------------- 
